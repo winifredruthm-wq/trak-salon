@@ -5,5 +5,11 @@
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#08735c"
+  "theme_color": "#08735c","icons": [
+  {
+    "src": "ChatGPT Image Oct 5, 2026, 11_22_45 PM.png",
+    "sizes": "any",
+    "type": "image/png"
+  }
+  ]
 }
