@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trak Salon</title>
+<style>
+:root{--p:#12664f;--bg:#f5f7f6;--card:#fff;--text:#17221f;--muted:#6b7773}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--p);color:white;padding:18px 16px;position:sticky;top:0}
+header b{font-size:22px}.wrap{max-width:760px;margin:auto;padding:16px}.card{background:var(--card);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 3px 16px #00000012}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+button{border:0;border-radius:10px;padding:11px 14px;background:var(--p);color:white;font-weight:700;cursor:pointer}
+button.alt{background:#e6efec;color:var(--p)} input,select{width:100%;padding:11px;border:1px solid #ccd5d2;border-radius:10px;margin:6px 0 12px}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#e4f3ed;color:var(--p);font-size:12px;font-weight:bold}
+.price{font-size:24px;font-weight:800}.muted{color:var(--muted)}nav{display:flex;gap:8px;overflow:auto;margin-bottom:10px}
+nav button{white-space:nowrap}.hidden{display:none}.stat{font-size:28px;font-weight:800}.track{border-left:4px solid var(--p);padding-left:12px;margin:12px 0}
+small{color:var(--muted)}
+</style>
+</head>
+<body>
+<header><b>Trak Salon</b><div style="font-size:13px">Track goods. Confirm delivery. Grow your business.</div></header>
+<div class="wrap">
+<nav>
+<button onclick="show('home')">Home</button><button onclick="show('ship')">Shipments</button>
+<button onclick="show('plans')">Plans</button><button onclick="show('admin')">Owner Dashboard</button>
+</nav>
+
+<section id="home">
+<div class="card"><span class="badge" id="planBadge">BASIC</span><h2>Welcome to Trak Salon</h2>
+<p>Track goods from the seller until they reach you, and record when the buyer and seller confirm collection.</p>
+<button onclick="show('ship')">Track a shipment</button> <button class="alt" onclick="show('plans')">Upgrade</button></div>
+<div class="grid">
+<div class="card"><div class="stat" id="shipmentCount">0</div><small>Shipments</small></div>
+<div class="card"><div class="stat" id="activeCount">0</div><small>Active shipments</small></div>
+</div></section>
+
+<section id="ship" class="hidden">
+<div class="card"><h2>Add shipment</h2>
+<label>Tracking ID</label><input id="tid" placeholder="e.g. TS-1001">
+<label>Goods</label><input id="goods" placeholder="e.g. Handbags">
+<label>Seller / Supplier</label><input id="seller" placeholder="Seller name">
+<label>Origin</label><input id="origin" placeholder="e.g. Lagos, Nigeria">
+<label>Status</label><select id="status"><option>Order confirmed</option><option>Dispatched</option><option>In transit</option><option>Arrived in Sierra Leone</option><option>Ready for collection</option><option>Collected</option></select>
+<button onclick="addShipment()">Save shipment</button></div>
+<div id="shipments"></div>
+</section>
+
+<section id="plans" class="hidden">
+<h2>Choose your plan</h2>
+<div class="grid">
+<div class="card"><span class="badge">BASIC</span><h3>Basic</h3><div class="price">Free</div><p>Up to 3 shipments/month<br>Delivery updates<br>Collection confirmation</p><button class="alt" onclick="setPlan('Basic',0)">Choose Basic</button></div>
+<div class="card"><span class="badge">BUSINESS</span><h3>Business</h3><div class="price">Le 100 <small>/month</small></div><p>Up to 25 shipments<br>Buyer & seller confirmation<br>Shipment history & notifications</p><button onclick="setPlan('Business',100)">Choose Business</button></div>
+<div class="card"><span class="badge">PRO</span><h3>Pro ⭐</h3><div class="price">Le 250 <small>/month</small></div><p>Unlimited tracking<br>Business dashboard<br>Reports & priority support</p><button onclick="trial()">Start 7-day Pro trial</button><br><br><button class="alt" onclick="setPlan('Pro',250)">Subscribe Pro</button></div>
+</div>
+<div class="card"><b>Payment integration:</b> this prototype records subscriptions for testing. Orange Money/Afrimoney require merchant/API approval before real money can be collected.</div>
+</section>
+
+<section id="admin" class="hidden">
+<div class="card"><h2>Owner Dashboard</h2><p class="muted">Prototype business overview stored on this device.</p></div>
+<div class="grid">
+<div class="card"><div class="stat" id="revenue">Le 0</div><small>Recorded subscription revenue</small></div>
+<div class="card"><div class="stat" id="subs">0</div><small>Paid subscriptions</small></div>
+<div class="card"><div class="stat" id="adminShip">0</div><small>Total shipments</small></div>
+</div>
+<div class="card"><h3>Current account</h3><p id="accountInfo"></p><button class="alt" onclick="resetDemo()">Reset demo data</button></div>
+</section>
+</div>
+<script>
+let data=JSON.parse(localStorage.getItem('trakSalon')||'{"plan":"Basic","shipments":[],"revenue":0,"subs":0,"trial":null}');
+function save(){localStorage.setItem('trakSalon',JSON.stringify(data));render()}
+function show(id){document.querySelectorAll('section').forEach(x=>x.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');render()}
+function addShipment(){
+ let t=tid.value.trim()||('TS-'+Date.now().toString().slice(-6));
+ if(data.plan==="Basic" && data.shipments.length>=3){alert("Basic allows up to 3 shipments in this prototype. Upgrade to add more.");show('plans');return}
+ data.shipments.unshift({id:t,goods:goods.value||"Goods",seller:seller.value||"Seller",origin:origin.value||"Nigeria",status:status.value,buyer:false,sellerConfirmed:false});
+ save(); tid.value=goods.value=seller.value=origin.value="";
+}
+function confirmIt(i,who){data.shipments[i][who]=true;save()}
+function updateStatus(i,v){data.shipments[i].status=v;save()}
+function setPlan(p,price){data.plan=p;if(price){data.revenue+=price;data.subs+=1}data.trial=null;save();alert(p+" plan activated in demo mode.");show('home')}
+function trial(){data.plan="Pro Trial";let d=new Date();d.setDate(d.getDate()+7);data.trial=d.toISOString();save();alert("7-day Pro trial activated.");show('home')}
+function resetDemo(){if(confirm("Reset all demo data?")){localStorage.removeItem('trakSalon');location.reload()}}
+function render(){
+ planBadge.textContent=data.plan.toUpperCase();shipmentCount.textContent=data.shipments.length;
+ activeCount.textContent=data.shipments.filter(x=>x.status!=="Collected").length;
+ revenue.textContent="Le "+data.revenue;subs.textContent=data.subs;adminShip.textContent=data.shipments.length;
+ accountInfo.innerHTML="<b>Plan:</b> "+data.plan+(data.trial?"<br><b>Trial ends:</b> "+new Date(data.trial).toLocaleDateString():"");
+ shipments.innerHTML=data.shipments.length?data.shipments.map((x,i)=>`<div class="card track"><b>${x.goods}</b> <span class="badge">${x.id}</span><p>${x.origin} · ${x.seller}</p>
+ <select onchange="updateStatus(${i},this.value)">${["Order confirmed","Dispatched","In transit","Arrived in Sierra Leone","Ready for collection","Collected"].map(s=>`<option ${s===x.status?"selected":""}>${s}</option>`).join("")}</select>
+ <p><b>Status:</b> ${x.status}</p><button class="${x.buyer?"alt":""}" onclick="confirmIt(${i},'buyer')">${x.buyer?"✓ Buyer confirmed":"Buyer confirm collection"}</button>
+ <button class="${x.sellerConfirmed?"alt":""}" onclick="confirmIt(${i},'sellerConfirmed')">${x.sellerConfirmed?"✓ Seller verified":"Seller verify collection"}</button></div>`).join(""):'<div class="card muted">No shipments yet.</div>';
+}
+render();
+</script></body></html>
