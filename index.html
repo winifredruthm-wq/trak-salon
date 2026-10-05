@@ -87,7 +87,7 @@ function render(){
  accountInfo.innerHTML="<b>Plan:</b> "+data.plan+(data.trial?"<br><b>Trial ends:</b> "+new Date(data.trial).toLocaleDateString():"");
  shipments.innerHTML=data.shipments.length?data.shipments.map((x,i)=>`<div class="card track"><b>${x.goods}</b> <span class="badge">${x.id}</span><p>${x.origin} · ${x.seller}</p>
  <select onchange="updateStatus(${i},this.value)">${["Order confirmed","Dispatched","In transit","Arrived in Sierra Leone","Ready for collection","Collected"].map(s=>`<option ${s===x.status?"selected":""}>${s}</option>`).join("")}</select>
- <p><b>Status:</b> ${x.status}</p><button class="${x.buyer?"alt":""}" onclick="confirmIt(${i},'buyer')">${x.buyer?"✓ Buyer confirmed":"Buyer confirm collection"}</button>
+ <p><b>Status:</b> ${x.status || "Order confirmed"}}</p><button class="${x.buyer?"alt":""}" onclick="confirmIt(${i},'buyer')">${x.buyer?"✓ Buyer confirmed":"Buyer confirm collection"}</button>
  <button class="${x.sellerConfirmed?"alt":""}" onclick="confirmIt(${i},'sellerConfirmed')">${x.sellerConfirmed?"✓ Seller verified":"Seller verify collection"}</button></div>`).join(""):'<div class="card muted">No shipments yet.</div>';
 }
 render();
