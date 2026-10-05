@@ -1,0 +1,9 @@
+{
+  "name": "Trak Salon",
+  "short_name": "Trak Salon",
+  "description": "Track goods, confirm delivery and grow your business.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#08735c"
+}
