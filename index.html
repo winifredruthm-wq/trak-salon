@@ -92,4 +92,19 @@ function render(){
  <button class="${x.sellerConfirmed?"alt":""}" onclick="confirmIt(${i},'sellerConfirmed')">${x.sellerConfirmed?"✓ Seller verified":"Seller verify collection"}</button></div>`).join(""):'<div class="card muted">No shipments yet.</div>';
 }
 render();
-</script></body></html>
+</script>
+ <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+  const firebaseConfig = {
+   apiKey: "AIzaSyALHGU9ng1MwF0di32Dz32i7Es07b77gDg",
+   authDomain: "trak-salon.firebaseapp.com",
+   projectId: "trak-salon",
+   storageBucket: "trak-salon.firebasestorage.app",
+   messagingSenderId: "248373461172",
+   appId: "1:248373461172:web:c82b2eaa2cc8cbb29e0fd4"
+    };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  </script>
+ </body></html>
