@@ -75,6 +75,12 @@ function addShipment(){
  if(data.plan==="Basic" && data.shipments.length>=3){alert("Basic allows up to 3 shipments in this prototype. Upgrade to add more.");show('plans');return}
  data.shipments.unshift({id:t,goods:goods.value||"Goods",seller:seller.value||"Seller",origin:origin.value||"Nigeria",status:status.value,buyer:false,sellerConfirmed:false});
  save(); tid.value=goods.value=seller.value=origin.value="";
+ if(window.db && window.firebaseSetDoc && window.firebaseDoc){
+  window.firebaseSetDoc(
+    window.firebaseDoc(window.db, "shipments", t),
+    data.shipments[0]
+  );
+ }
 }
 function confirmIt(i,who){data.shipments[i][who]=true;save()}
 function updateStatus(i,v){data.shipments[i].status=v;save()}
@@ -95,7 +101,7 @@ render();
 </script>
  <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getFirestore, collection, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
   const firebaseConfig = {
    apiKey: "AIzaSyALHGU9ng1MwF0di32Dz32i7Es07b77gDg",
    authDomain: "trak-salon.firebaseapp.com",
@@ -106,5 +112,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebas
     };
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  window.db = db;
+  window.firebaseDoc = doc;
+  window.firebaseSetDoc = setDoc;
   </script>
  </body></html>
